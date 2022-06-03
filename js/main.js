@@ -3,6 +3,8 @@ let costoTotal = 0;
 let totalEnProductos=0;
 let element = document.getElementById("totalPrecio");
 element.innerHTML="Total en precio";
+//Arreglo global al almacenar la lista de compras
+let datos = [];
 
 let txtNombre = document.getElementById("Name");
 //txtNombre.value="Leche Semidescremada";
@@ -96,12 +98,26 @@ costoTotal += (precio * cantidad);
 total.innerHTML = `$ ${costoTotal.toFixed(2)}`;
 localStorage.setItem("precioTotal", costoTotal.toFixed(2));
 
+//JSON
+let elemento =`{  "id" :${contador},
+"nombre": "${txtNombre.value}", 
+"cantidad": ${txtNumber.value}, 
+"precio": ${precio}
+}`;
+//parse, toma una cadena y la hace objeto
+
+datos.push(JSON.parse(elemento));
+
+localStorage.setItem("elementosTabla" , JSON.stringify(datos));
+console.log(datos);
+
 let tmp = `<tr>
  <th scope="row">${contador}</th>
  <td>${txtNombre.value}</td>
  <td>${txtNumber.value}</td>
  <td>$ ${precio}</td>
  </tr> `;
+
 cuerpoTabla[0].innerHTML += tmp;
 txtNumber.value="";
 txtNombre.value="";
@@ -134,5 +150,18 @@ if (localStorage.getItem ("contadorProductos")!=null)   {
     costoTotal = parseFloat(localStorage.getItem ("precioTotal"));
     total.innerHTML = costoTotal;
   }//if precioTotal
+
+  if(localStorage.getItem("elementosTabla")!=null){
+      datos= JSON.parse(localStorage.getItem("elementosTabla"));
+      datos.forEach(element => {
+          cuerpoTabla[0].innerHTML += `<tr>
+          <th scope="row">${element.id}</th>
+          <td>${element.nombre}</td>
+          <td>${element.cantidad}</td>
+          <td>$ ${element.precio}</td>
+          </tr> `;
+          
+      });
+  }//if elementos Tablas
 }
 );
